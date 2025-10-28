@@ -18,7 +18,7 @@ const App: React.FC = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch(`/api/youtube-feed?channelId=${YOUTUBE_CHANNEL_ID}`);
+        const response = await fetch(`/api/youtubeFeed?channelId=${YOUTUBE_CHANNEL_ID}`);
         
         if (!response.ok) {
           throw new Error(`Failed to fetch feed: ${response.statusText}`);

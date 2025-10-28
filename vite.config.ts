@@ -11,7 +11,7 @@ export default defineConfig({
   ],
   server: {
     proxy: {
-      '/api/youtube-feed': {
+      '/api/youtubeFeed': {
         target: 'https://www.youtube.com',
         changeOrigin: true,
         rewrite: (path) => {

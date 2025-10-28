@@ -1,4 +1,3 @@
-// Do not rely on '@vercel/node' types in this environment; use any to avoid missing type declarations.
 export default async function handler(req: any, res: any) {
   const channelId = req.query.channelId as string;
   
@@ -18,6 +17,7 @@ export default async function handler(req: any, res: any) {
     res.setHeader('Content-Type', 'application/xml');
     res.status(200).send(data);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch feed' });
+    console.error('API Error:', error);
+    res.status(500).json({ error: error instanceof Error ? error.message : 'Failed to fetch feed' });
   }
 }
