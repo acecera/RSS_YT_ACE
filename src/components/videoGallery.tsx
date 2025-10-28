@@ -22,11 +22,11 @@ const PlayIcon: React.FC = () => (
 );
 
 const VideoGalleryItem: React.FC<VideoGalleryItemProps> = ({ video, onSelectVideo }) => {
-    const formattedDate = new Date(video.publishedAt).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-    });
+  const formattedDate = new Date(video.publishedAt).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
 
   return (
     <div onClick={() => onSelectVideo(video)} className="cursor-pointer group">
@@ -34,9 +34,10 @@ const VideoGalleryItem: React.FC<VideoGalleryItemProps> = ({ video, onSelectVide
         <img
           src={video.thumbnailUrl}
           alt={video.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          crossOrigin="anonymous"
+          className="relative z-10 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
-        <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 flex items-center justify-center transition-all duration-300">
           <PlayIcon />
         </div>
       </div>

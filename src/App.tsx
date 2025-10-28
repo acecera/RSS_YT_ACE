@@ -48,18 +48,31 @@ const App: React.FC = () => {
           const id = entry.querySelector('id')?.textContent ?? '';
           const videoId = id.split(':').pop() ?? '';
           
+          // Get thumbnail URL from media:thumbnail using namespace-aware query
+          let thumbnailUrl = '';
+          const mediaNamespace = 'http://search.yahoo.com/mrss/';
+          const thumbnails = entry.getElementsByTagNameNS(mediaNamespace, 'thumbnail');
+          if (thumbnails.length > 0) {
+            thumbnailUrl = thumbnails[0].getAttribute('url') ?? '';
+          }
+          // Fallback if not found - use default.jpg which is more reliable
+          if (!thumbnailUrl) {
+            thumbnailUrl = `https://i.ytimg.com/vi/${videoId}/default.jpg`;
+          }
+          
           // Debug logging
           if (index === 0) {
             console.log('First entry:', entry);
             console.log('ID field:', id);
             console.log('Video ID:', videoId);
+            console.log('Thumbnail from RSS:', thumbnailUrl);
           }
           
           return {
             id: videoId,
             title: entry.querySelector('title')?.textContent ?? 'No Title',
             description: entry.querySelector('media\\:description')?.textContent ?? 'No Description',
-            thumbnailUrl: `https://i.ytimg.com/vi/${videoId}/sddefault.jpg`,
+            thumbnailUrl: thumbnailUrl,
             publishedAt: entry.querySelector('published')?.textContent ?? new Date().toISOString(),
           };
         });
