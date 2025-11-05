@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Video } from './types';
-import { YOUTUBE_CHANNEL_ID, VIDEOS_PER_PAGE } from './constants';
+import { VIDEOS_PER_PAGE } from './constants';
 import VideoPlayer from './components/videoPlayer';
 import VideoDetails from './components/videoCard';
 import VideoGalleryItem from './components/videoGallery';
@@ -18,64 +18,17 @@ const App: React.FC = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch(`/api/youtubeFeed?channelId=${YOUTUBE_CHANNEL_ID}`);
+        // Fetch from CloudFront - past shows
+        const response = await fetch('/mock-past.json');
         
         if (!response.ok) {
           throw new Error(`Failed to fetch feed: ${response.statusText}`);
         }
-        const data = await response.text();
-        console.log('Raw API response:', data);
-        console.log('Response length:', data.length);
-        const parser = new DOMParser();
-        const xml = parser.parseFromString(data, 'application/xml');
-        const entries = Array.from(xml.querySelectorAll('entry'));
         
-        if (entries.length === 0) {
-            // Check for parse errors or empty feed
-            const errorNode = xml.querySelector('parsererror');
-            if (errorNode) {
-                console.error('XML Parsing Error:', errorNode.textContent);
-                throw new Error('Failed to parse the video feed. The format might be incorrect.');
-            }
-            // Feed is valid XML but has no entries
-            setAllVideos([]);
-            setCurrentVideo(null);
-            setIsLoading(false);
-            return;
-        }
-
-        const parsedVideos: Video[] = entries.map((entry, index) => {
-          const id = entry.querySelector('id')?.textContent ?? '';
-          const videoId = id.split(':').pop() ?? '';
-          
-          // Get thumbnail URL from media:thumbnail using namespace-aware query
-          let thumbnailUrl = '';
-          const mediaNamespace = 'http://search.yahoo.com/mrss/';
-          const thumbnails = entry.getElementsByTagNameNS(mediaNamespace, 'thumbnail');
-          if (thumbnails.length > 0) {
-            thumbnailUrl = thumbnails[0].getAttribute('url') ?? '';
-          }
-          // Fallback if not found - use default.jpg which is more reliable
-          if (!thumbnailUrl) {
-            thumbnailUrl = `https://i.ytimg.com/vi/${videoId}/default.jpg`;
-          }
-          
-          // Debug logging
-          if (index === 0) {
-            console.log('First entry:', entry);
-            console.log('ID field:', id);
-            console.log('Video ID:', videoId);
-            console.log('Thumbnail from RSS:', thumbnailUrl);
-          }
-          
-          return {
-            id: videoId,
-            title: entry.querySelector('title')?.textContent ?? 'No Title',
-            description: entry.querySelector('media\\:description')?.textContent ?? 'No Description',
-            thumbnailUrl: thumbnailUrl,
-            publishedAt: entry.querySelector('published')?.textContent ?? new Date().toISOString(),
-          };
-        });
+        // Parse as JSON (not XML)
+        const parsedVideos: Video[] = await response.json();
+        
+        console.log('Fetched videos:', parsedVideos);
         
         setAllVideos(parsedVideos);
         if (parsedVideos.length > 0) {
@@ -128,7 +81,7 @@ const App: React.FC = () => {
           <div className="bg-gray-800 rounded-lg p-4 md:p-6">
             <div className="grid grid-cols-12 gap-6">
               <div className="col-span-12 lg:col-span-9">
-                <VideoPlayer videoId={currentVideo.id} />
+                <VideoPlayer videoId={currentVideo.externalId} />
               </div>
               <div className="col-span-12 lg:col-span-3">
                 <VideoDetails video={currentVideo} />

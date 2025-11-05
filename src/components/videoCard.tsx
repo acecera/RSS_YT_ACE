@@ -18,13 +18,13 @@ const VideoDetails: React.FC<VideoCardProps> = ({ video }) => {
       <div className="flex items-center space-x-2 mb-3">
         <div className="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-md flex items-center space-x-2">
           <LiveIndicator />
-          <span>Live</span>
+          <span>{video.status}</span>
         </div>
       </div>
       <h3 className="text-xl font-bold mb-2">{video.title}</h3>
       <p className="text-gray-400 text-sm flex-grow mb-4">{video.description}</p>
       <a
-        href={`https://www.youtube.com/watch?v=${video.id}`}
+        href={`https://www.youtube.com/watch?v=${video.externalId}`}
         target="_blank"
         rel="noopener noreferrer"
         className="mt-auto w-full text-center bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300"

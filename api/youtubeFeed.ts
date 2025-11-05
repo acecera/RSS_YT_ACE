@@ -6,7 +6,7 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    const feedUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
+    const feedUrl = `https://cdn.dev.lossdog.com/current.json$`;
     const response = await fetch(feedUrl);
     
     if (!response.ok) {

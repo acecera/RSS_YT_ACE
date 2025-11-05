@@ -22,7 +22,7 @@ const PlayIcon: React.FC = () => (
 );
 
 const VideoGalleryItem: React.FC<VideoGalleryItemProps> = ({ video, onSelectVideo }) => {
-  const formattedDate = new Date(video.publishedAt).toLocaleDateString('en-US', {
+  const formattedDate = new Date(video.scheduledStartAt).toLocaleDateString('en-US', {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
